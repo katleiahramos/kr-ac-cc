@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import styled from "styled-components";
 
 const api_key = process.env.REACT_APP_API_KEY;
 
@@ -26,9 +27,10 @@ class App extends React.Component {
         <table>
           <thead>
             <tr>
-              <th>Firstname</th>
-              <th>Lastname</th>
-              <th>Age</th>
+              <th>Contact Name</th>
+              <th>Total Value</th>
+              <th>Location Deals</th>
+              <th>Tags</th>
             </tr>
           </thead>
           <tbody>

@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// use dotenv to handle environment variables 
 require('dotenv').config()
 
 ReactDOM.render(<App />, document.getElementById('root'));

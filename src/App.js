@@ -2,13 +2,29 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import styled from "styled-components";
-
+import get from "lodash/get"
 const api_key = process.env.REACT_APP_API_KEY;
 
 class App extends React.Component {
+  state = {
+    contactData: null
+  }
   componentDidMount() {
     fetch(
       "https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts",
+      {
+        headers: {
+          "Api-Token": api_key,
+          "x-requested-with": "xhr"
+        }
+      }
+    )
+      .then(rsp => rsp.json())
+      .then(rsp => this.setState({ contactData: rsp }))
+      .catch(err => console.log(err));
+
+    fetch(
+      "https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts/856/contactTags",
       {
         headers: {
           "Api-Token": api_key,
@@ -21,6 +37,44 @@ class App extends React.Component {
       .catch(err => console.log(err));
   }
 
+  calculateTotalValue = (arrayOfStrVals) => {
+    let totalValue = 0;
+    arrayOfStrVals.forEach(value => totalValue += parseInt(value))
+    return totalValue
+  }
+
+  calculateTotalDeals = (contactId) => {
+    fetch(
+      `https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts/${contactId}/contactTags`,
+      {
+        headers: {
+          "Api-Token": api_key,
+          "x-requested-with": "xhr"
+        }
+      }
+    )
+      .then(rsp => rsp.json())
+      .then(tagData => {
+        return tagData.contactTags.length
+      })
+      .catch(err => console.log(err));
+
+  }
+
+  renderContactRows = () => {
+    const { contactData } = this.state;
+    console.log("IN CONTACT ROWS", this.state.contactData)
+
+    return get(contactData, "contacts", []).map(contact => (
+      <>
+        <tr key={contact.id}>
+          <td>{contact.firstName + " " + contact.lastName} </td>
+          <td>{this.calculateTotalValue(contact.scoreValues)}</td>
+          <td>{this.calculateTotalDeals(contact.id)}</td>
+        </tr>
+      </>
+    ))
+  }
   render() {
     return (
       <div className="App">
@@ -34,16 +88,7 @@ class App extends React.Component {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Jill</td>
-              <td>Smith</td>
-              <td>50</td>
-            </tr>
-            <tr>
-              <td>Eve</td>
-              <td>Jackson</td>
-              <td>94</td>
-            </tr>
+            {this.renderContactRows()}
           </tbody>
         </table>
       </div>

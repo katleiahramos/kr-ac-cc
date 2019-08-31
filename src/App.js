@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import styled from "styled-components";
 import get from "lodash/get"
+import ContactRow from "../src/components/ContactRow"
 const api_key = process.env.REACT_APP_API_KEY;
 
 class App extends React.Component {
@@ -44,6 +45,7 @@ class App extends React.Component {
   }
 
   calculateTotalDeals = (contactId) => {
+    let numTotalDeals;
     fetch(
       `https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts/${contactId}/contactTags`,
       {
@@ -55,10 +57,12 @@ class App extends React.Component {
     )
       .then(rsp => rsp.json())
       .then(tagData => {
-        return tagData.contactTags.length
+        numTotalDeals = tagData.contactTags.length
+        console.log("in calc total dealss .then", numTotalDeals)
       })
       .catch(err => console.log(err));
-
+    console.log("in calc total dealss", numTotalDeals)
+    return numTotalDeals
   }
 
   renderContactRows = () => {
@@ -66,13 +70,7 @@ class App extends React.Component {
     console.log("IN CONTACT ROWS", this.state.contactData)
 
     return get(contactData, "contacts", []).map(contact => (
-      <>
-        <tr key={contact.id}>
-          <td>{contact.firstName + " " + contact.lastName} </td>
-          <td>{this.calculateTotalValue(contact.scoreValues)}</td>
-          <td>{this.calculateTotalDeals(contact.id)}</td>
-        </tr>
-      </>
+      <ContactRow key={contact.id} contact={contact} />
     ))
   }
   render() {

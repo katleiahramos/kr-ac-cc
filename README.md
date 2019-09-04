@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-To Run Project: 
+To Run Project locally: 
 
-- `npm install` 
-- Run `npm start` 
+1. `npm install` 
+2. `npm start` 

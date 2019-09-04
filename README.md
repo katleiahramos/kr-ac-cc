@@ -2,5 +2,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 To Run Project locally: 
 
-1. `npm install` 
-2. `npm start` 
+1. Clone this repositiory locally `git clone https://github.com/katleiahramos/kr-ac-cc.git`
+2. `npm install` 
+3. `npm start` 

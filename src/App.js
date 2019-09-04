@@ -6,6 +6,40 @@ import get from "lodash/get"
 import ContactRow from "../src/components/ContactRow"
 const api_key = process.env.REACT_APP_API_KEY;
 
+
+const StyledContainer = styled.div`
+  min-width: 540px;
+  height: 100%
+  overflow: scroll;
+
+  table {
+    margin: 5% auto;
+    border: 1px solid #CCC;
+    border-collapse: collapse;
+    width: 75%;
+
+    th {
+      height: 28px;
+      color: #666;
+    }
+
+    tr { 
+      border: solid #CCC;
+      border-width: 1px 0;
+    }
+
+    td {
+      padding: 2px;
+      height: 46px;
+    }
+
+    th {
+      padding: 5px;
+    }
+
+  }
+`
+
 class App extends React.Component {
   state = {
     contactData: null
@@ -23,51 +57,10 @@ class App extends React.Component {
       .then(rsp => rsp.json())
       .then(rsp => this.setState({ contactData: rsp }))
       .catch(err => console.log(err));
-
-    fetch(
-      "https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts/856/contactTags",
-      {
-        headers: {
-          "Api-Token": api_key,
-          "x-requested-with": "xhr"
-        }
-      }
-    )
-      .then(rsp => rsp.json())
-      .then(rsp => console.log(rsp))
-      .catch(err => console.log(err));
-  }
-
-  calculateTotalValue = (arrayOfStrVals) => {
-    let totalValue = 0;
-    arrayOfStrVals.forEach(value => totalValue += parseInt(value))
-    return totalValue
-  }
-
-  calculateTotalDeals = (contactId) => {
-    let numTotalDeals;
-    fetch(
-      `https://cors-anywhere.herokuapp.com/https://lamppoststudios.api-us1.com/api/3/contacts/${contactId}/contactTags`,
-      {
-        headers: {
-          "Api-Token": api_key,
-          "x-requested-with": "xhr"
-        }
-      }
-    )
-      .then(rsp => rsp.json())
-      .then(tagData => {
-        numTotalDeals = tagData.contactTags.length
-        console.log("in calc total dealss .then", numTotalDeals)
-      })
-      .catch(err => console.log(err));
-    console.log("in calc total dealss", numTotalDeals)
-    return numTotalDeals
   }
 
   renderContactRows = () => {
     const { contactData } = this.state;
-    console.log("IN CONTACT ROWS", this.state.contactData)
 
     return get(contactData, "contacts", []).map(contact => (
       <ContactRow key={contact.id} contact={contact} />
@@ -75,13 +68,14 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div className="App">
+      <StyledContainer className="App">
         <table>
           <thead>
             <tr>
               <th>Contact Name</th>
               <th>Total Value</th>
-              <th>Location Deals</th>
+              <th>Location</th>
+              <th>Deals</th>
               <th>Tags</th>
             </tr>
           </thead>
@@ -89,7 +83,7 @@ class App extends React.Component {
             {this.renderContactRows()}
           </tbody>
         </table>
-      </div>
+      </StyledContainer>
     );
   }
 }

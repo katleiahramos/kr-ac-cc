@@ -7,21 +7,21 @@ class ContactRow extends Component {
 
     state = {
         totalDeals: null,
-        totalTags: null
+        totalTags: null,
+        totalValue: null
     }
 
     componentDidMount() {
-        const { contact } = this.props;
-        // this.calculateTotalDeals(contact.scoreValues)
+        this.calculateTotalValue()
         this.calculateTotalDeals()
         this.calcualteTotalTags()
     }
-    calculateTotalValue = (arrayOfStrVals) => {
+    calculateTotalValue = () => {
+        const { contact } = this.props;
         let totalValue = 0;
-        arrayOfStrVals.forEach(value => totalValue += parseInt(value))
-        return totalValue
+        contact.scoreValues.forEach(value => totalValue += parseInt(value))
+        this.setState({ totalValue: totalValue })
     }
-
     calculateTotalDeals = () => {
         const { contact } = this.props;
         fetch(
@@ -35,7 +35,6 @@ class ContactRow extends Component {
         )
             .then(rsp => rsp.json())
             .then(tagData => {
-
                 const numTotalDeals = tagData.contactDeals.length
                 this.setState({ totalDeals: numTotalDeals })
             })
@@ -65,12 +64,13 @@ class ContactRow extends Component {
 
     render() {
         const { contact } = this.props;
-        const { totalDeals, totalTags } = this.state;
+        const { totalDeals, totalTags, totalValue } = this.state;
         return (
             <>
                 <tr >
                     <td>{contact.firstName + " " + contact.lastName} </td>
-                    <td>{this.calculateTotalValue(contact.scoreValues)}</td>
+                    <td>{totalValue}</td>
+                    <td>Location</td>
                     <td>{totalDeals}</td>
                     <td>{totalTags}</td>
                 </tr>
